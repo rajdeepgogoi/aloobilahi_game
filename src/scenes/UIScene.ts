@@ -114,7 +114,7 @@ export class UIScene extends Phaser.Scene {
     const height = this.scale.height;
     const width = this.scale.width;
 
-    const controlBarHeight = 200; // Increased to cover Vivo X200 bottom bar area
+    const controlBarHeight = 240; // Increased to cover Vivo X200 bottom bar area and maintain 16px grid alignment
 
     // Draw solid black background bar at the bottom for controls
     const blackBar = this.add.graphics();
@@ -129,13 +129,13 @@ export class UIScene extends Phaser.Scene {
     const padding = 15;
     
     const leftX = btnSize / 2 + padding + 15;
-    const leftY = height - 100; // Raised 20px up to prevent screen border clips
+    const leftY = height - 120; // Raised further up to prevent screen border clips and gestures overlap
     
     const rightX = leftX + btnSize + padding + 15;
     const rightY = leftY;
 
     const jumpX = width - jumpSize / 2 - padding - 15;
-    const jumpY = height - 100; // Raised 20px up
+    const jumpY = height - 120; // Raised further up
 
     // LEFT BUTTON
     this.btnLeft = this.add.graphics();
