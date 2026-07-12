@@ -120,8 +120,8 @@ export class EndingScene extends Phaser.Scene {
     // 8. Birthday Card Container
     const cardW = 380;
     const cardH = 360; // Expanded height to comfortably fit long message without clipping
-    const messageY = 480; // Starts lower down, resting above the control bar limit when closed
-    const openY = 350; // Centered when open, hiding cake
+    const messageY = height / 2 + 180; // Starts lower down at the bottom of the screen when closed
+    const openY = height / 2 + 30; // Centered when open, hiding cake
 
     // Determine initial state from data (passed when coming back from Bouquet Page)
     const startOpen = data && data.startOpen;
@@ -170,7 +170,7 @@ export class EndingScene extends Phaser.Scene {
     });
 
     // 9. Secret ending button PLACED BELOW the card when opened (Y coordinate gap increased)
-    const buttonY = 680; // Centered inside the bottom control bar area (Y: 560-800)
+    const buttonY = openY + cardH / 2 + 45; // Spaced 45px below the card's bottom
     if (this.secretEnding) {
       this.specialEndingBtn = this.add.text(width / 2, buttonY, "Click here for the special (5/5 gifts)", {
         fontFamily: CONFIG.ui.fontFamily,
@@ -249,9 +249,10 @@ export class EndingScene extends Phaser.Scene {
   }
 
   private toggleCard(open: boolean) {
+    const height = this.scale.height;
     const cardH = 360;
-    const messageY = 480; // Starts lower down, resting above the control bar limit when closed
-    const openY = 350; // Centered when open, hiding cake
+    const messageY = height / 2 + 180;
+    const openY = height / 2 + 30;
 
     if (open) {
       this.isCardOpen = true;
@@ -463,7 +464,7 @@ export class EndingScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // 2. Spawn giant bouquet in center (increased size for main visual focus)
-    const bouquetY = 200;
+    const bouquetY = height / 2 - 120;
     const bouquetSprite = this.add.sprite(width / 2, bouquetY, 'bouquet').setScale(3.5);
     this.tweens.add({
       targets: bouquetSprite,
@@ -522,7 +523,7 @@ export class EndingScene extends Phaser.Scene {
     // 5. Card with secret text PLACED BELOW the bouquet
     const textCardW = 380;
     const textCardH = 100;
-    const textCardY = 345;
+    const textCardY = height / 2 + 95;
 
     const textCardContainer = this.add.container(width / 2, textCardY);
 
@@ -545,7 +546,7 @@ export class EndingScene extends Phaser.Scene {
     textCardContainer.add(secretText);
 
     // 6. Setup Interactive Memory Slideshow
-    this.setupSlideshow(width / 2, 460);
+    this.setupSlideshow(width / 2, height - 160);
 
     // 7. Spawn Exit/Return buttons at the bottom
     const backBtn = this.add.text(width / 2 - 135, height - 40, '◀ Back to Card', {

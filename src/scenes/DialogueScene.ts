@@ -37,7 +37,7 @@ export class DialogueScene extends Phaser.Scene {
     const height = this.scale.height;
 
     // 1. Build dialog box layout (dynamic sizing for portrait)
-    const playHeight = height - 160;
+    const playHeight = height - 240;
     const boxW = Math.min(width - 40, 600);
     const boxH = 150;
     const boxX = (width - boxW) / 2;
