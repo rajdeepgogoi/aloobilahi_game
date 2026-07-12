@@ -71,11 +71,11 @@ export class GameScene extends Phaser.Scene {
       .fillGradientStyle(0xa8dadc, 0xa8dadc, 0x457b9d, 0x457b9d, 1)
       .fillRect(0, 0, worldWidth, height);
 
-    this.bgClouds = this.add.tileSprite(0, 40, worldWidth, 64, 'cloud');
+    this.bgClouds = this.add.tileSprite(0, 120, worldWidth, 64, 'cloud');
     this.bgClouds.setOrigin(0, 0).setScrollFactor(0.1).setAlpha(0.5);
 
-    this.bgMountains = this.add.tileSprite(0, height - 128, worldWidth, 128, 'mountain');
-    this.bgMountains.setOrigin(0, 0).setScrollFactor(0.2).setScale(1.5).setAlpha(0.3);
+    this.bgMountains = this.add.tileSprite(0, height - 280, worldWidth, 128, 'mountain');
+    this.bgMountains.setOrigin(0, 0).setScrollFactor(0.2).setScale(3.2).setAlpha(0.3);
 
     // 3. Initialize groups
     this.platforms = this.physics.add.staticGroup();

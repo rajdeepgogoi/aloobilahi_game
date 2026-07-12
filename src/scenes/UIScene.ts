@@ -26,28 +26,28 @@ export class UIScene extends Phaser.Scene {
     // 1. HUD Left: Coin/Potato Counter
     const coinTexture = 'momo';
     
-    // Coin Icon
-    this.add.image(25, 25, coinTexture).setScale(1.8);
-    this.coinText = this.add.text(45, 15, 'x 000', {
+    // Coin Icon (enlarged to scale 2.8)
+    this.add.image(30, 25, coinTexture).setScale(2.8);
+    this.coinText = this.add.text(60, 12, 'x 000', {
       fontFamily: CONFIG.ui.fontFamily,
-      fontSize: '18px',
+      fontSize: '24px',
       fontStyle: 'bold',
       color: '#ffffff'
     });
 
-    // Health Hearts Counter
+    // Health Hearts Counter (enlarged to 26px font)
     const initialHealth = this.registry.get('health') ?? 3;
-    this.healthText = this.add.text(125, 15, '❤️'.repeat(initialHealth), {
-      fontSize: '18px'
+    this.healthText = this.add.text(175, 12, '❤️'.repeat(initialHealth), {
+      fontSize: '26px'
     });
 
     // 2. HUD Right: Secret Gift Box Tracker (1-5 color dots)
     this.giftContainer = this.add.container(width - 150, 15);
     this.updateGiftHUD();
 
-    // 3. Pause & Volume Buttons (Top center-right)
-    const pauseBtn = this.add.text(width - 200, 15, '⏸️', {
-      fontSize: '20px'
+    // 3. Pause & Volume Buttons (Top center-right, enlarged to 28px font)
+    const pauseBtn = this.add.text(width - 210, 25, '⏸️', {
+      fontSize: '28px'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     pauseBtn.on('pointerdown', () => {
@@ -56,8 +56,8 @@ export class UIScene extends Phaser.Scene {
       this.scene.launch('PauseScene');
     });
 
-    this.volumeButton = this.add.text(width - 240, 15, AudioSynth.getMuted() ? '🔇' : '🔊', {
-      fontSize: '20px'
+    this.volumeButton = this.add.text(width - 260, 25, AudioSynth.getMuted() ? '🔇' : '🔊', {
+      fontSize: '28px'
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     this.volumeButton.on('pointerdown', () => {

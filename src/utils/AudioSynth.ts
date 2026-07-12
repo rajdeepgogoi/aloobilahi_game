@@ -1,4 +1,5 @@
 // Retro Web Audio Synthesizer and Sequencer for 8-bit audio effects and music
+// Extended with local HTML5 Audio player for lo-fi background music (/bgm.mp3)
 
 class AudioSynthManager {
   private ctx: AudioContext | null = null;
@@ -8,39 +9,39 @@ class AudioSynthManager {
   private currentStep: number = 0;
   private isPlayingMusic: boolean = false;
 
-  // Simple 8-bit music loop (Melody + Bass)
-  // Notes represented by frequencies (Hz) and duration in steps
-  // 0 means rest
+  // Local Background Music Player
+  private bgmAudio: HTMLAudioElement | null = null;
+  private activeSong: 'normal' | 'tense' = 'normal';
+
+  // Simple 8-bit music loop (Melody + Bass) as fallback BGM
   private melody = [
-    261.63, 293.66, 329.63, 349.23, 392.00, 349.23, 329.63, 293.66, // C4 D4 E4 F4 G4 F4 E4 D4
-    329.63, 349.23, 392.00, 440.00, 493.88, 440.00, 392.00, 349.23, // E4 F4 G4 A4 B4 A4 G4 F4
-    392.00, 440.00, 493.88, 523.25, 587.33, 523.25, 493.88, 440.00, // G4 A4 B4 C5 D5 C5 B4 A4
-    493.88, 0,      523.25, 0,      587.33, 0,      659.25, 0        // B4, C5, D5, E5 (staccato climb)
+    261.63, 293.66, 329.63, 349.23, 392.00, 349.23, 329.63, 293.66,
+    329.63, 349.23, 392.00, 440.00, 493.88, 440.00, 392.00, 349.23,
+    392.00, 440.00, 493.88, 523.25, 587.33, 523.25, 493.88, 440.00,
+    493.88, 0,      523.25, 0,      587.33, 0,      659.25, 0
   ];
 
   private bassLine = [
-    130.81, 130.81, 196.00, 196.00, 146.83, 146.83, 220.00, 220.00, // C3 C3 G3 G3 D3 D3 A3 A3
-    164.81, 164.81, 220.00, 220.00, 196.00, 196.00, 146.83, 146.83, // E3 E3 A3 A3 G3 G3 D3 D3
-    196.00, 196.00, 246.94, 246.94, 261.63, 261.63, 196.00, 196.00, // G3 G3 B3 B3 C4 C4 G3 G3
-    146.83, 196.00, 220.00, 246.94, 261.63, 261.63, 196.00, 0        // D3 G3 A3 B3 C4 C4 G3
+    130.81, 130.81, 196.00, 196.00, 146.83, 146.83, 220.00, 220.00,
+    164.81, 164.81, 220.00, 220.00, 196.00, 196.00, 146.83, 146.83,
+    196.00, 196.00, 246.94, 246.94, 261.63, 261.63, 196.00, 196.00,
+    146.83, 196.00, 220.00, 246.94, 261.63, 261.63, 196.00, 0
   ];
 
   // Suspenseful 8-bit minor key loop for Count Eggplant boss room
   private tenseMelody = [
-    329.63, 349.23, 311.13, 329.63, 349.23, 370.00, 329.63, 311.13, // E4 F4 D#4 E4 F4 F#4 E4 D#4
-    329.63, 311.13, 293.66, 311.13, 329.63, 349.23, 370.00, 392.00, // E4 D#4 D4 D#4 E4 F4 F#4 G4
-    392.00, 370.00, 349.23, 370.00, 392.00, 415.30, 392.00, 370.00, // G4 F#4 F4 F#4 G4 G#4 G4 F#4
-    392.00, 0,      415.30, 0,      440.00, 0,      466.16, 0        // G4, G#4, A4, A#4 (fast tense climb)
+    329.63, 349.23, 311.13, 329.63, 349.23, 370.00, 329.63, 311.13,
+    329.63, 311.13, 293.66, 311.13, 329.63, 349.23, 370.00, 392.00,
+    392.00, 370.00, 349.23, 370.00, 392.00, 415.30, 392.00, 370.00,
+    392.00, 0,      415.30, 0,      440.00, 0,      466.16, 0
   ];
 
   private tenseBassLine = [
-    164.81, 164.81, 164.81, 164.81, 155.56, 155.56, 155.56, 155.56, // E3 E3 E3 E3 D#3 D#3 D#3 D#3
-    164.81, 164.81, 164.81, 164.81, 174.61, 174.61, 174.61, 174.61, // E3 E3 E3 E3 F3 F3 F3 F3
-    196.00, 196.00, 196.00, 196.00, 185.00, 185.00, 185.00, 185.00, // G3 G3 G3 G3 F#3 F#3 F#3 F#3
-    196.00, 196.00, 207.65, 207.65, 220.00, 220.00, 233.08, 0        // G3 G3 G#3 G#3 A3 A3 A#3
+    164.81, 164.81, 164.81, 164.81, 155.56, 155.56, 155.56, 155.56,
+    164.81, 164.81, 164.81, 164.81, 174.61, 174.61, 174.61, 174.61,
+    196.00, 196.00, 196.00, 196.00, 185.00, 185.00, 185.00, 185.00,
+    196.00, 196.00, 207.65, 207.65, 220.00, 220.00, 233.08, 0
   ];
-
-  private activeSong: 'normal' | 'tense' = 'normal';
 
   constructor() {
     // Audio Context is initialized on first user interaction to comply with browser autoplay policies
@@ -57,12 +58,29 @@ class AudioSynthManager {
     } catch (e) {
       console.warn("Web Audio API is not supported in this browser", e);
     }
+
+    // Initialize local background music element
+    this.initLocalBGM();
+  }
+
+  private initLocalBGM() {
+    if (this.bgmAudio) return;
+    try {
+      this.bgmAudio = new Audio('/bgm.mp3');
+      this.bgmAudio.loop = true;
+      this.bgmAudio.volume = this.isMuted ? 0 : 0.12; // Soft volume for vibes (12%)
+    } catch (e) {
+      console.warn("Failed to initialize background music player", e);
+    }
   }
 
   public resume() {
     this.init();
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
+    }
+    if (this.bgmAudio && this.isPlayingMusic && this.activeSong === 'normal' && !this.isMuted) {
+      this.bgmAudio.play().catch(() => {});
     }
   }
 
@@ -71,7 +89,17 @@ class AudioSynthManager {
     if (this.masterVolume && this.ctx) {
       this.masterVolume.gain.setValueAtTime(mute ? 0 : 0.15, this.ctx.currentTime);
     }
-    if (!mute && this.isPlayingMusic && !this.musicInterval) {
+
+    if (this.bgmAudio) {
+      this.bgmAudio.volume = mute ? 0 : 0.12;
+      if (mute) {
+        this.bgmAudio.pause();
+      } else if (this.isPlayingMusic && this.activeSong === 'normal') {
+        this.bgmAudio.play().catch(() => {});
+      }
+    }
+
+    if (!mute && this.isPlayingMusic) {
       this.startMusic(this.activeSong);
     } else if (mute) {
       this.stopMusic();
@@ -304,10 +332,43 @@ class AudioSynthManager {
     this.resume();
     this.isPlayingMusic = true;
     this.activeSong = songType;
+
     if (this.isMuted) return;
-    
-    // Stop any existing loop
+
+    if (songType === 'tense') {
+      // Pause local BGM during intense boss fight and play boss retro music
+      if (this.bgmAudio) {
+        this.bgmAudio.pause();
+      }
+      this.start8BitMusic('tense');
+    } else {
+      // Normal background music: play local file if loaded
+      this.stop8BitMusic();
+      if (this.bgmAudio) {
+        this.bgmAudio.volume = 0.12; // Low soft volume for vibes
+        this.bgmAudio.play().catch(() => {
+          // If local file is missing, fallback to 8-bit normal music
+          this.start8BitMusic('normal');
+        });
+      } else {
+        this.start8BitMusic('normal');
+      }
+    }
+  }
+
+  public stopMusic() {
+    this.stop8BitMusic();
+    if (this.bgmAudio) {
+      this.bgmAudio.pause();
+    }
+  }
+
+  public pauseMusic() {
     this.stopMusic();
+  }
+
+  private start8BitMusic(songType: 'normal' | 'tense' = 'normal') {
+    this.stop8BitMusic();
 
     this.currentStep = 0;
     const stepDuration = songType === 'tense' ? 180 : 220; 
@@ -359,15 +420,11 @@ class AudioSynthManager {
     }, stepDuration);
   }
 
-  public stopMusic() {
+  private stop8BitMusic() {
     if (this.musicInterval) {
       clearInterval(this.musicInterval);
       this.musicInterval = null;
     }
-  }
-
-  public pauseMusic() {
-    this.stopMusic();
   }
 }
 
