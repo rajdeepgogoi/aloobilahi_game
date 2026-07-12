@@ -1,0 +1,37 @@
+/* Custom platformer styling for pixel-perfect upscaling and centering */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&family=Press+Start+2P&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0b132b;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Centered, aspect-ratio-locked game viewport wrapper */
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #0b132b; /* dark blue matching game bg */
+  overflow: hidden;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  
+  /* Enforce retro sharp pixels */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
