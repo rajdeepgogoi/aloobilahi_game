@@ -57,7 +57,7 @@ export class GameScene extends Phaser.Scene {
     this.activeSwitchSprites = [];
     this.bossRoomTriggered = false;
 
-    this.playHeight = this.scale.height - 160;
+    this.playHeight = this.scale.height - 200;
     const height = this.playHeight;
 
     // 1. Setup Camera bounds
