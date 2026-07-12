@@ -235,7 +235,7 @@ export class EndingScene extends Phaser.Scene {
     });
 
     // Exit buttons (for normal ending) below card
-    this.setupExitButtons(height - 40);
+    this.setupExitButtons(height - 85);
     this.replayBtn?.setAlpha(this.isCardOpen && !this.secretEnding ? 1 : 0).setVisible(this.isCardOpen && !this.secretEnding);
     this.menuBtn?.setAlpha(this.isCardOpen && !this.secretEnding ? 1 : 0).setVisible(this.isCardOpen && !this.secretEnding);
 
@@ -464,7 +464,7 @@ export class EndingScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // 2. Spawn giant bouquet in center (increased size for main visual focus)
-    const bouquetY = height / 2 - 120;
+    const bouquetY = 220;
     const bouquetSprite = this.add.sprite(width / 2, bouquetY, 'bouquet').setScale(3.5);
     this.tweens.add({
       targets: bouquetSprite,
@@ -523,7 +523,7 @@ export class EndingScene extends Phaser.Scene {
     // 5. Card with secret text PLACED BELOW the bouquet
     const textCardW = 380;
     const textCardH = 100;
-    const textCardY = height / 2 + 95;
+    const textCardY = 405;
 
     const textCardContainer = this.add.container(width / 2, textCardY);
 
@@ -546,10 +546,10 @@ export class EndingScene extends Phaser.Scene {
     textCardContainer.add(secretText);
 
     // 6. Setup Interactive Memory Slideshow
-    this.setupSlideshow(width / 2, height - 160);
+    this.setupSlideshow(width / 2, 515);
 
     // 7. Spawn Exit/Return buttons at the bottom
-    const backBtn = this.add.text(width / 2 - 135, height - 40, '◀ Back to Card', {
+    const backBtn = this.add.text(width / 2 - 135, height - 85, '◀ Back to Card', {
       fontFamily: CONFIG.ui.fontFamily,
       fontSize: '13px',
       fontStyle: 'bold',
@@ -563,7 +563,7 @@ export class EndingScene extends Phaser.Scene {
       this.scene.start('EndingScene', { startOpen: true });
     });
 
-    this.replayBtn = this.add.text(width / 2, height - 40, 'Replay Game', {
+    this.replayBtn = this.add.text(width / 2, height - 85, 'Replay Game', {
       fontFamily: CONFIG.ui.fontFamily,
       fontSize: '13px',
       fontStyle: 'bold',
@@ -578,7 +578,7 @@ export class EndingScene extends Phaser.Scene {
       this.scene.start('GameScene');
     });
 
-    this.menuBtn = this.add.text(width / 2 + 135, height - 40, 'Character Select', {
+    this.menuBtn = this.add.text(width / 2 + 135, height - 85, 'Character Select', {
       fontFamily: CONFIG.ui.fontFamily,
       fontSize: '13px',
       fontStyle: 'bold',
